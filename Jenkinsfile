@@ -31,7 +31,7 @@ pipeline {
     stage("Docker Push") {
       steps {
         sh "docker login -u $DOCKERHUB_USR -p $DOCKERHUB_PSW"
-        sh "docker docker push $DOCKER_REPO:$VERSION"
+        sh "docker push $DOCKER_REPO:$VERSION"
         sh "docker logout"
       }
     }
