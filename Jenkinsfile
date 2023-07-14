@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    GITHUB_REPO="https://github.com/lyhan12/hello_world_server"
+    GITHUB_REPO="https://github.com/YYJ-1229/hello_world_server"
     DOCKER_REPO="lyhan12/hello_world_server"
     VERSION=1.0
   }
