@@ -36,22 +36,33 @@ pipeline {
       }
     }
     stage("Deploy") {
-      steps {
-        sh "echo 'Deploy'"
+      steps([$class: 'BapSshPromotionPublisherPlugin']) {
+        sshPublisher(
+          continueOnError: false, failOnError: true,
+          publishers: [
+            sshPublisherDesc(
+              configName: "remote_server",
+              verbose: true,
+              transfers: [
+                sshTransfer(execCommand: "touch test_file")
+              ]
+            )
+          ]
+        )
       }
     }
   }
   post {
     success {
       slackSend (
-          channel: "#성공",
+          channel: "#랜덤",
           color: "#00FF00",
           message: "SUCCESS : Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
           )
     }
     failure {
       slackSend (
-          channel: "#실패",
+          channel: "#랜덤",
           color: "#FF0000",
           message: "FAIL : Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
           )
