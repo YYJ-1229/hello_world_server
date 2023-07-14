@@ -35,7 +35,7 @@ pipeline {
         sh "docker logout"
       }
     }
-    stage("Deploy") {
+   stage("Deploy") {
       steps([$class: 'BapSshPromotionPublisherPlugin']) {
         sshPublisher(
           continueOnError: false, failOnError: true,
@@ -44,7 +44,7 @@ pipeline {
               configName: "remote_server",
               verbose: true,
               transfers: [
-                sshTransfer(execCommand: "docker pull $DOCKER_REPO"),
+                sshTransfer(execCommand: "docker pull $DOCKER_REPO:$VERSION"),
                 sshTransfer(execCommand: "docker ps -aq --filter 'name=hello_world_server' | xargs -r docker stop"),
                 sshTransfer(execCommand: "docker ps -aq --filter 'name=hello_world_server' | xargs -r docker rm"),
                 sshTransfer(execCommand: "docker run -d --name hello_world_server -p 8000:8000 $DOCKER_REPO:$VERSION")
@@ -54,18 +54,18 @@ pipeline {
         )
       }
     }
-  }
+  }  
   post {
     success {
       slackSend (
-          channel: "#랜덤",
+          channel: "#성공",
           color: "#00FF00",
           message: "SUCCESS : Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
           )
     }
     failure {
       slackSend (
-          channel: "#랜덤",
+          channel: "#실패",
           color: "#FF0000",
           message: "FAIL : Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
           )
