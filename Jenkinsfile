@@ -44,7 +44,10 @@ pipeline {
               configName: "remote_server",
               verbose: true,
               transfers: [
-                sshTransfer(execCommand: "touch test_file")
+                sshTransfer(execCommand: "docker pull $DOCKER_REPO"),
+                sshTransfer(execCommand: "docker ps -aq --filter 'name=hello_world_server' | xargs -r docker stop"),
+                sshTransfer(execCommand: "docker ps -aq --filter 'name=hello_world_server' | xargs -r docker rm"),
+                sshTransfer(execCommand: "docker run -d --name hello_world_server -p 8000:8000 $DOCKER_REPO")
               ]
             )
           ]
